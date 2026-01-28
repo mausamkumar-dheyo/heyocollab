@@ -1,0 +1,5 @@
+[package]
+name = "heyocollab"
+
+[profile.release]
+wasm-opt = ["-O4"]  # Maximum optimization
