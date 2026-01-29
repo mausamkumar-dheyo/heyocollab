@@ -764,4 +764,98 @@ mod tests {
         assert_eq!(state_a.processing_stages.characters.len(), 3);
         assert_eq!(state_b.processing_stages.characters.len(), 3);
     }
+
+    // =========================================================================
+    // INTEGRATION TESTS - Real .automerge files
+    // =========================================================================
+
+    #[test]
+    fn test_load_legend_automerge() {
+        // Load the converted file
+        let bytes = std::fs::read("src/bin/json2automerge/examples/legend.automerge")
+            .expect("Failed to read legend.automerge");
+
+        // Create manager from bytes
+        let mut manager =
+            StoryboardManager::from_bytes(&bytes).expect("Failed to load automerge");
+
+        // Hydrate and verify
+        let state = manager.get_state().expect("Failed to get state");
+
+        // Verify metadata
+        assert_eq!(state.id, "SUpXe7YkRm");
+        assert_eq!(state.title, "legend");
+        assert_eq!(state.status, "processing");
+
+        // Verify counts
+        assert_eq!(state.processing_stages.characters.len(), 2);
+        assert_eq!(state.processing_stages.props.len(), 1);
+        assert_eq!(state.processing_stages.sets.len(), 1);
+        assert_eq!(state.scenes.len(), 1);
+
+        // Verify scene has shots
+        let scene = state.scenes.values().next().unwrap();
+        assert_eq!(scene.shots.len(), 10);
+    }
+
+    #[test]
+    fn test_legend_modify_and_save() {
+        let bytes = std::fs::read("src/bin/json2automerge/examples/legend.automerge").unwrap();
+        let mut manager = StoryboardManager::from_bytes(&bytes).unwrap();
+
+        // Modify title
+        manager
+            .update_state(|state| {
+                state.title = "legend - modified".to_string();
+            })
+            .unwrap();
+
+        // Save and reload
+        let new_bytes = manager.save();
+        let mut manager2 = StoryboardManager::from_bytes(&new_bytes).unwrap();
+        let state2 = manager2.get_state().unwrap();
+
+        assert_eq!(state2.title, "legend - modified");
+
+        // Original data still intact
+        assert_eq!(state2.processing_stages.characters.len(), 2);
+        assert_eq!(state2.scenes.len(), 1);
+    }
+
+    #[test]
+    fn test_legend_character_access() {
+        let bytes = std::fs::read("src/bin/json2automerge/examples/legend.automerge").unwrap();
+        let mut manager = StoryboardManager::from_bytes(&bytes).unwrap();
+        let state = manager.get_state().unwrap();
+
+        // Verify character order is preserved
+        assert_eq!(state.processing_stages.character_order.len(), 2);
+
+        // Access characters by order
+        for char_id in &state.processing_stages.character_order {
+            let character = state.processing_stages.characters.get(char_id).unwrap();
+            assert!(!character.name.is_empty());
+            assert!(!character.id.is_empty());
+        }
+    }
+
+    #[test]
+    fn test_legend_shot_access() {
+        let bytes = std::fs::read("src/bin/json2automerge/examples/legend.automerge").unwrap();
+        let mut manager = StoryboardManager::from_bytes(&bytes).unwrap();
+        let state = manager.get_state().unwrap();
+
+        // Get first scene
+        let scene_id = &state.scene_order[0];
+        let scene = state.scenes.get(scene_id).unwrap();
+
+        // Verify shot order
+        assert_eq!(scene.shot_order.len(), 10);
+
+        // Access shots by order
+        for (i, shot_id) in scene.shot_order.iter().enumerate() {
+            let shot = scene.shots.get(shot_id).unwrap();
+            assert_eq!(shot.shot_number, (i + 1) as i32);
+        }
+    }
 }
