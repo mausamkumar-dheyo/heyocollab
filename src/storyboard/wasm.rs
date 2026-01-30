@@ -3,6 +3,7 @@
 //! This module provides JavaScript-friendly wrappers around the
 //! StoryboardManager for use in browser environments.
 
+use automerge::ChangeHash;
 use js_sys::{Array, Uint8Array};
 use serde::Serialize;
 use serde_wasm_bindgen::{from_value, Serializer};
@@ -224,6 +225,42 @@ impl JsStoryboardManager {
         js_result!(self.inner.append_characters_history(id, entry))
     }
 
+    /// Sets the character name (O(1)).
+    #[wasm_bindgen(js_name = setCharacterName)]
+    pub fn set_character_name(&mut self, id: &str, name: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_name("characters", id, name))
+    }
+
+    /// Sets the character description (O(1)).
+    #[wasm_bindgen(js_name = setCharacterDescription)]
+    pub fn set_character_description(&mut self, id: &str, description: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_description("characters", id, description))
+    }
+
+    /// Sets the character tag (O(1)).
+    #[wasm_bindgen(js_name = setCharacterTag)]
+    pub fn set_character_tag(&mut self, id: &str, tag: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_tag("characters", id, tag.as_deref()))
+    }
+
+    /// Sets the character image_prompt (O(1)).
+    #[wasm_bindgen(js_name = setCharacterImagePrompt)]
+    pub fn set_character_image_prompt(&mut self, id: &str, prompt: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_image_prompt("characters", id, prompt))
+    }
+
+    /// Sets the character caption (O(1)).
+    #[wasm_bindgen(js_name = setCharacterCaption)]
+    pub fn set_character_caption(&mut self, id: &str, caption: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_caption("characters", id, caption.as_deref()))
+    }
+
+    /// Sets the character enhanced flag (O(1)).
+    #[wasm_bindgen(js_name = setCharacterEnhanced)]
+    pub fn set_character_enhanced(&mut self, id: &str, enhanced: bool) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_enhanced("characters", id, enhanced))
+    }
+
     // =========================================================================
     // PROP OPERATIONS
     // =========================================================================
@@ -273,6 +310,42 @@ impl JsStoryboardManager {
         js_result!(self.inner.append_props_history(id, entry))
     }
 
+    /// Sets the prop name (O(1)).
+    #[wasm_bindgen(js_name = setPropName)]
+    pub fn set_prop_name(&mut self, id: &str, name: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_name("props", id, name))
+    }
+
+    /// Sets the prop description (O(1)).
+    #[wasm_bindgen(js_name = setPropDescription)]
+    pub fn set_prop_description(&mut self, id: &str, description: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_description("props", id, description))
+    }
+
+    /// Sets the prop tag (O(1)).
+    #[wasm_bindgen(js_name = setPropTag)]
+    pub fn set_prop_tag(&mut self, id: &str, tag: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_tag("props", id, tag.as_deref()))
+    }
+
+    /// Sets the prop image_prompt (O(1)).
+    #[wasm_bindgen(js_name = setPropImagePrompt)]
+    pub fn set_prop_image_prompt(&mut self, id: &str, prompt: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_image_prompt("props", id, prompt))
+    }
+
+    /// Sets the prop caption (O(1)).
+    #[wasm_bindgen(js_name = setPropCaption)]
+    pub fn set_prop_caption(&mut self, id: &str, caption: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_caption("props", id, caption.as_deref()))
+    }
+
+    /// Sets the prop enhanced flag (O(1)).
+    #[wasm_bindgen(js_name = setPropEnhanced)]
+    pub fn set_prop_enhanced(&mut self, id: &str, enhanced: bool) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_enhanced("props", id, enhanced))
+    }
+
     // =========================================================================
     // SET OPERATIONS
     // =========================================================================
@@ -320,6 +393,42 @@ impl JsStoryboardManager {
     pub fn append_set_history(&mut self, id: &str, entry: JsValue) -> Result<(), JsValue> {
         let entry: AssetHistory = from_value(entry)?;
         js_result!(self.inner.append_sets_history(id, entry))
+    }
+
+    /// Sets the set name (O(1)).
+    #[wasm_bindgen(js_name = setSetName)]
+    pub fn set_set_name(&mut self, id: &str, name: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_name("sets", id, name))
+    }
+
+    /// Sets the set description (O(1)).
+    #[wasm_bindgen(js_name = setSetDescription)]
+    pub fn set_set_description(&mut self, id: &str, description: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_description("sets", id, description))
+    }
+
+    /// Sets the set tag (O(1)).
+    #[wasm_bindgen(js_name = setSetTag)]
+    pub fn set_set_tag(&mut self, id: &str, tag: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_tag("sets", id, tag.as_deref()))
+    }
+
+    /// Sets the set image_prompt (O(1)).
+    #[wasm_bindgen(js_name = setSetImagePrompt)]
+    pub fn set_set_image_prompt(&mut self, id: &str, prompt: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_image_prompt("sets", id, prompt))
+    }
+
+    /// Sets the set caption (O(1)).
+    #[wasm_bindgen(js_name = setSetCaption)]
+    pub fn set_set_caption(&mut self, id: &str, caption: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_caption("sets", id, caption.as_deref()))
+    }
+
+    /// Sets the set enhanced flag (O(1)).
+    #[wasm_bindgen(js_name = setSetEnhanced)]
+    pub fn set_set_enhanced(&mut self, id: &str, enhanced: bool) -> Result<(), JsValue> {
+        js_result!(self.inner.set_entity_enhanced("sets", id, enhanced))
     }
 
     // =========================================================================
@@ -390,6 +499,48 @@ impl JsStoryboardManager {
     ) -> Result<(), JsValue> {
         let lwo: LooksWithOutfit = from_value(lwo)?;
         js_result!(self.inner.set_looks_with_outfit(scene_id, tag, lwo))
+    }
+
+    /// Sets the scene title (O(1)).
+    #[wasm_bindgen(js_name = setSceneTitle)]
+    pub fn set_scene_title(&mut self, scene_id: &str, title: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_scene_title(scene_id, title))
+    }
+
+    /// Sets the scene synopsis (O(1)).
+    #[wasm_bindgen(js_name = setSceneSynopsis)]
+    pub fn set_scene_synopsis(&mut self, scene_id: &str, synopsis: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_scene_synopsis(scene_id, synopsis.as_deref()))
+    }
+
+    /// Sets the scene header (O(1)).
+    #[wasm_bindgen(js_name = setSceneHeader)]
+    pub fn set_scene_header(&mut self, scene_id: &str, header: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_scene_header(scene_id, header))
+    }
+
+    /// Sets the scene content (O(1)).
+    #[wasm_bindgen(js_name = setSceneContent)]
+    pub fn set_scene_content(&mut self, scene_id: &str, content: &str) -> Result<(), JsValue> {
+        js_result!(self.inner.set_scene_content(scene_id, content))
+    }
+
+    /// Sets the scene raw_text (O(1)).
+    #[wasm_bindgen(js_name = setSceneRawText)]
+    pub fn set_scene_raw_text(&mut self, scene_id: &str, raw_text: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_scene_raw_text(scene_id, raw_text.as_deref()))
+    }
+
+    /// Sets the scene predicted_shots (O(1)).
+    #[wasm_bindgen(js_name = setScenePredictedShots)]
+    pub fn set_scene_predicted_shots(&mut self, scene_id: &str, predicted_shots: i64) -> Result<(), JsValue> {
+        js_result!(self.inner.set_scene_predicted_shots(scene_id, predicted_shots))
+    }
+
+    /// Sets the scene reasoning (O(1)).
+    #[wasm_bindgen(js_name = setSceneReasoning)]
+    pub fn set_scene_reasoning(&mut self, scene_id: &str, reasoning: Option<String>) -> Result<(), JsValue> {
+        js_result!(self.inner.set_scene_reasoning(scene_id, reasoning.as_deref()))
     }
 
     // =========================================================================
@@ -493,6 +644,83 @@ impl JsStoryboardManager {
         js_result!(self.inner.append_shot_history(scene_id, shot_id, entry))
     }
 
+    /// Sets the shot visual_description (O(1)).
+    #[wasm_bindgen(js_name = setShotVisualDescription)]
+    pub fn set_shot_visual_description(
+        &mut self,
+        scene_id: &str,
+        shot_id: &str,
+        desc: &str,
+    ) -> Result<(), JsValue> {
+        js_result!(self.inner.set_shot_visual_description(scene_id, shot_id, desc))
+    }
+
+    /// Sets the shot action (O(1)).
+    #[wasm_bindgen(js_name = setShotAction)]
+    pub fn set_shot_action(
+        &mut self,
+        scene_id: &str,
+        shot_id: &str,
+        action: Option<String>,
+    ) -> Result<(), JsValue> {
+        js_result!(self.inner.set_shot_action(scene_id, shot_id, action.as_deref()))
+    }
+
+    /// Sets the shot camera (O(1)).
+    #[wasm_bindgen(js_name = setShotCamera)]
+    pub fn set_shot_camera(
+        &mut self,
+        scene_id: &str,
+        shot_id: &str,
+        camera: Option<String>,
+    ) -> Result<(), JsValue> {
+        js_result!(self.inner.set_shot_camera(scene_id, shot_id, camera.as_deref()))
+    }
+
+    /// Sets the shot environment (O(1)).
+    #[wasm_bindgen(js_name = setShotEnvironment)]
+    pub fn set_shot_environment(
+        &mut self,
+        scene_id: &str,
+        shot_id: &str,
+        env: Option<String>,
+    ) -> Result<(), JsValue> {
+        js_result!(self.inner.set_shot_environment(scene_id, shot_id, env.as_deref()))
+    }
+
+    /// Sets the shot subject (O(1)).
+    #[wasm_bindgen(js_name = setShotSubject)]
+    pub fn set_shot_subject(
+        &mut self,
+        scene_id: &str,
+        shot_id: &str,
+        subject: Option<String>,
+    ) -> Result<(), JsValue> {
+        js_result!(self.inner.set_shot_subject(scene_id, shot_id, subject.as_deref()))
+    }
+
+    /// Sets the shot size (O(1)).
+    #[wasm_bindgen(js_name = setShotSize)]
+    pub fn set_shot_size(
+        &mut self,
+        scene_id: &str,
+        shot_id: &str,
+        size: &str,
+    ) -> Result<(), JsValue> {
+        js_result!(self.inner.set_shot_size(scene_id, shot_id, size))
+    }
+
+    /// Sets the shot angle (O(1)).
+    #[wasm_bindgen(js_name = setShotAngle)]
+    pub fn set_shot_angle(
+        &mut self,
+        scene_id: &str,
+        shot_id: &str,
+        angle: &str,
+    ) -> Result<(), JsValue> {
+        js_result!(self.inner.set_shot_angle(scene_id, shot_id, angle))
+    }
+
     // =========================================================================
     // SYNC OPERATIONS
     // =========================================================================
@@ -503,21 +731,74 @@ impl JsStoryboardManager {
         js_result!(self.inner.merge(&mut other.inner))
     }
 
-    /// Generates a sync message for changes since their heads.
-    #[wasm_bindgen(js_name = generateSyncMessage)]
-    pub fn generate_sync_message(&mut self, _their_heads: Array) -> Result<JsValue, JsValue> {
-        // TODO: Parse their_heads properly
-        let msg = self.inner.generate_sync_message(&[]);
+    /// Gets changes since the given heads (for incremental sync).
+    ///
+    /// Takes an array of hex-encoded change hashes and returns the diff bytes
+    /// as a Uint8Array. Returns null if there are no changes.
+    ///
+    /// # Example (JavaScript)
+    /// ```js
+    /// const heads = manager.getHeads(); // Get current heads
+    /// // ... make some changes ...
+    /// const diff = manager.getChangesSince(heads);
+    /// if (diff) {
+    ///   await uploadDiff(diff); // Upload only the diff
+    /// }
+    /// ```
+    #[wasm_bindgen(js_name = getChangesSince)]
+    pub fn get_changes_since(&mut self, their_heads: Array) -> Result<JsValue, JsValue> {
+        // Parse hex strings to ChangeHash
+        let heads: Vec<ChangeHash> = their_heads
+            .iter()
+            .filter_map(|v| {
+                v.as_string().and_then(|s| {
+                    // Parse hex string to bytes, then to ChangeHash
+                    let bytes = hex::decode(&s).ok()?;
+                    if bytes.len() == 32 {
+                        let mut arr = [0u8; 32];
+                        arr.copy_from_slice(&bytes);
+                        Some(ChangeHash(arr))
+                    } else {
+                        None
+                    }
+                })
+            })
+            .collect();
+
+        let msg = self.inner.generate_sync_message(&heads);
         match msg {
             Some(bytes) => Ok(Uint8Array::from(&bytes[..]).into()),
             None => Ok(JsValue::NULL),
         }
     }
 
+    /// Applies incremental changes from a diff (for incremental sync).
+    ///
+    /// Takes a Uint8Array of diff bytes and applies them to the document.
+    /// This is more efficient than loading a full document.
+    ///
+    /// # Example (JavaScript)
+    /// ```js
+    /// const diff = await downloadDiff(diffId);
+    /// manager.applyChanges(diff);
+    /// ```
+    #[wasm_bindgen(js_name = applyChanges)]
+    pub fn apply_changes(&mut self, changes: &[u8]) -> Result<(), JsValue> {
+        js_result!(self.inner.apply_sync_message(changes))
+    }
+
+    /// Generates a sync message for changes since their heads.
+    /// @deprecated Use getChangesSince instead
+    #[wasm_bindgen(js_name = generateSyncMessage)]
+    pub fn generate_sync_message(&mut self, their_heads: Array) -> Result<JsValue, JsValue> {
+        self.get_changes_since(their_heads)
+    }
+
     /// Applies a sync message from a peer.
+    /// @deprecated Use applyChanges instead
     #[wasm_bindgen(js_name = applySyncMessage)]
     pub fn apply_sync_message(&mut self, msg: &[u8]) -> Result<(), JsValue> {
-        js_result!(self.inner.apply_sync_message(msg))
+        self.apply_changes(msg)
     }
 }
 

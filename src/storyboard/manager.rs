@@ -419,6 +419,162 @@ impl StoryboardManager {
     }
 
     // =========================================================================
+    // ENTITY FIELD SETTERS (Characters, Props, Sets)
+    // =========================================================================
+
+    /// Sets the entity name (O(1)).
+    pub fn set_entity_name(&mut self, entity_type: &str, id: &str, name: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["processing_stages", entity_type, id])?;
+        self.doc.put(&obj, "name", ScalarValue::Str(name.into()))?;
+        Ok(())
+    }
+
+    /// Sets the entity description (O(1)).
+    pub fn set_entity_description(&mut self, entity_type: &str, id: &str, description: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["processing_stages", entity_type, id])?;
+        self.doc.put(&obj, "description", ScalarValue::Str(description.into()))?;
+        Ok(())
+    }
+
+    /// Sets the entity tag (O(1)).
+    pub fn set_entity_tag(&mut self, entity_type: &str, id: &str, tag: Option<&str>) -> CollabResult<()> {
+        self.set_entity_field_opt_str(&["processing_stages", entity_type, id], "tag", tag)
+    }
+
+    /// Sets the entity image_prompt (O(1)).
+    pub fn set_entity_image_prompt(&mut self, entity_type: &str, id: &str, prompt: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["processing_stages", entity_type, id])?;
+        self.doc.put(&obj, "image_prompt", ScalarValue::Str(prompt.into()))?;
+        Ok(())
+    }
+
+    /// Sets the entity caption (O(1)).
+    pub fn set_entity_caption(&mut self, entity_type: &str, id: &str, caption: Option<&str>) -> CollabResult<()> {
+        self.set_entity_field_opt_str(&["processing_stages", entity_type, id], "caption", caption)
+    }
+
+    /// Sets the entity enhanced flag (O(1)).
+    pub fn set_entity_enhanced(&mut self, entity_type: &str, id: &str, enhanced: bool) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["processing_stages", entity_type, id])?;
+        self.doc.put(&obj, "enhanced", ScalarValue::Boolean(enhanced))?;
+        Ok(())
+    }
+
+    // =========================================================================
+    // SCENE FIELD SETTERS
+    // =========================================================================
+
+    /// Sets the scene title (O(1)).
+    pub fn set_scene_title(&mut self, scene_id: &str, title: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["scenes", scene_id])?;
+        self.doc.put(&obj, "title", ScalarValue::Str(title.into()))?;
+        Ok(())
+    }
+
+    /// Sets the scene synopsis (O(1)).
+    pub fn set_scene_synopsis(&mut self, scene_id: &str, synopsis: Option<&str>) -> CollabResult<()> {
+        self.set_scene_field_opt_str(scene_id, "synopsis", synopsis)
+    }
+
+    /// Sets the scene header (O(1)).
+    pub fn set_scene_header(&mut self, scene_id: &str, header: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["scenes", scene_id])?;
+        self.doc.put(&obj, "header", ScalarValue::Str(header.into()))?;
+        Ok(())
+    }
+
+    /// Sets the scene content (O(1)).
+    pub fn set_scene_content(&mut self, scene_id: &str, content: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["scenes", scene_id])?;
+        self.doc.put(&obj, "content", ScalarValue::Str(content.into()))?;
+        Ok(())
+    }
+
+    /// Sets the scene raw_text (O(1)).
+    pub fn set_scene_raw_text(&mut self, scene_id: &str, raw_text: Option<&str>) -> CollabResult<()> {
+        self.set_scene_field_opt_str(scene_id, "raw_text", raw_text)
+    }
+
+    /// Sets the scene predicted_shots (O(1)).
+    pub fn set_scene_predicted_shots(&mut self, scene_id: &str, predicted_shots: i64) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["scenes", scene_id])?;
+        self.doc.put(&obj, "predicted_shots", ScalarValue::Int(predicted_shots))?;
+        Ok(())
+    }
+
+    /// Sets the scene reasoning (O(1)).
+    pub fn set_scene_reasoning(&mut self, scene_id: &str, reasoning: Option<&str>) -> CollabResult<()> {
+        self.set_scene_field_opt_str(scene_id, "reasoning", reasoning)
+    }
+
+    /// Helper for scene optional string fields.
+    fn set_scene_field_opt_str(&mut self, scene_id: &str, key: &str, value: Option<&str>) -> CollabResult<()> {
+        self.cached_state = None;
+        let obj = self.get_obj_at_path(&["scenes", scene_id])?;
+        match value {
+            Some(v) => self.doc.put(&obj, key, ScalarValue::Str(v.into()))?,
+            None => { self.doc.delete(&obj, key)?; }
+        }
+        Ok(())
+    }
+
+    // =========================================================================
+    // ADDITIONAL SHOT FIELD SETTERS
+    // =========================================================================
+
+    /// Sets the shot visual_description (O(1)).
+    pub fn set_shot_visual_description(&mut self, scene_id: &str, shot_id: &str, desc: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let shot_obj = self.get_shot_obj(scene_id, shot_id)?;
+        self.doc.put(&shot_obj, "visual_description", ScalarValue::Str(desc.into()))?;
+        Ok(())
+    }
+
+    /// Sets the shot action (O(1)).
+    pub fn set_shot_action(&mut self, scene_id: &str, shot_id: &str, action: Option<&str>) -> CollabResult<()> {
+        self.set_shot_field_opt_str(scene_id, shot_id, "action", action)
+    }
+
+    /// Sets the shot camera (O(1)).
+    pub fn set_shot_camera(&mut self, scene_id: &str, shot_id: &str, camera: Option<&str>) -> CollabResult<()> {
+        self.set_shot_field_opt_str(scene_id, shot_id, "camera", camera)
+    }
+
+    /// Sets the shot environment (O(1)).
+    pub fn set_shot_environment(&mut self, scene_id: &str, shot_id: &str, env: Option<&str>) -> CollabResult<()> {
+        self.set_shot_field_opt_str(scene_id, shot_id, "environment", env)
+    }
+
+    /// Sets the shot subject (O(1)).
+    pub fn set_shot_subject(&mut self, scene_id: &str, shot_id: &str, subject: Option<&str>) -> CollabResult<()> {
+        self.set_shot_field_opt_str(scene_id, shot_id, "subject", subject)
+    }
+
+    /// Sets the shot size (O(1)).
+    pub fn set_shot_size(&mut self, scene_id: &str, shot_id: &str, size: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let shot_obj = self.get_shot_obj(scene_id, shot_id)?;
+        self.doc.put(&shot_obj, "size", ScalarValue::Str(size.into()))?;
+        Ok(())
+    }
+
+    /// Sets the shot angle (O(1)).
+    pub fn set_shot_angle(&mut self, scene_id: &str, shot_id: &str, angle: &str) -> CollabResult<()> {
+        self.cached_state = None;
+        let shot_obj = self.get_shot_obj(scene_id, shot_id)?;
+        self.doc.put(&shot_obj, "angle", ScalarValue::Str(angle.into()))?;
+        Ok(())
+    }
+
+    // =========================================================================
     // SYNC OPERATIONS
     // =========================================================================
 

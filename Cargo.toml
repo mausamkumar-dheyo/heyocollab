@@ -52,13 +52,14 @@ base64 = { version = "0.22", optional = true }
 wasm-bindgen = { version = "0.2", optional = true }
 js-sys = { version = "0.3", optional = true }
 serde-wasm-bindgen = { version = "0.6", optional = true }
+hex = { version = "0.4", optional = true }
 
 [dev-dependencies]
 criterion = "0.5"
 
 [features]
 default = []
-wasm = ["wasm-bindgen", "js-sys", "serde-wasm-bindgen"]
+wasm = ["wasm-bindgen", "js-sys", "serde-wasm-bindgen", "hex"]
 storyboard = ["paste"]
 cli = ["clap", "anyhow", "storyboard"]
 migrate = ["reqwest", "aes-gcm", "pbkdf2", "sha2", "flate2", "tokio", "indicatif", "base64", "cli"]
